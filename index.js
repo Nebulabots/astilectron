@@ -374,7 +374,7 @@ function onReady() {
                 break;
             // Window
             case consts.eventNames.windowCmdSetBrowserView:
-                elements[json.targetID].setBrowserView(json.viewTargetID);
+                elements[json.targetID].setBrowserView(views[json.viewTargetID]);
                 break;
             case consts.eventNames.windowCmdBlur:
                 elements[json.targetID].blur();

@@ -20,6 +20,8 @@ module.exports = {
       "browser.view.event.web.contents.executed.javascript",
     browserViewCmdWebContentsSetProxy:
       "browser.view.cmd.web.contents.set.proxy",
+    browserViewEventWebContentsSetProxy:
+      "browser.view.event.web.contents.set.proxy",
     browserViewCmdInterceptStringProtocol:
       "browser.view.cmd.intercept.string.protocol",
     browserViewEventInterceptStringProtocol:

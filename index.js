@@ -327,6 +327,7 @@ function onReady() {
         break;
 
       // BrowserView
+
       case consts.eventNames.browserViewCmdCreate:
         browserViewCreate(json);
         break;
@@ -343,12 +344,15 @@ function onReady() {
       case consts.eventNames.browserViewCmdWebContentsExecuteJavascript:
         views[json.targetID].webContents
           .executeJavaScript(json.code)
-          .then(() =>
-            client.write(
-              json.targetID,
-              consts.eventNames.browserViewEventWebContentsExecutedJavaScript
-            )
-          );
+          .then((result) => {
+            Promise.resolve(result).then((value) =>
+              client.write(
+                json.targetID,
+                consts.eventNames.browserViewEventWebContentsExecutedJavaScript,
+                { codeResult: value }
+              )
+            );
+          });
         break;
       case consts.eventNames.browserViewCmdWebContentsSetProxy:
         views[json.targetID].webContents.session.clearAuthCache().then(() => {
@@ -362,11 +366,44 @@ function onReady() {
             );
         });
         break;
+      case consts.eventNames.browserViewCmdInterceptStringProtocol:
+        views[
+          json.targetID
+        ].webContents.session.protocol.interceptStringProtocol(
+          json.scheme,
+          (request, callback) => {
+            registerCallback(
+              json,
+              consts.eventNames.browserViewEventInterceptStringProtocolCallback,
+              { request },
+              consts.eventNames.browserViewEventInterceptStringProtocol,
+              callback
+            );
+          }
+        );
+        break;
+      case consts.eventNames.browserViewEventInterceptStringProtocolCallback:
+        executeCallback(
+          consts.eventNames.browserViewEventInterceptStringProtocolCallback,
+          json,
+          { mimeType: json.mimeType, data: json.data },
+          false
+        );
+        break;
+
       case consts.eventNames.browserViewCmdSetBackgroundColor:
         views[json.targetID].setBackgroundColor(json.color);
+        client.write(
+          json.targetID,
+          consts.eventNames.browserViewEventSetBackgroundColor
+        );
         break;
       case consts.eventNames.browserViewCmdSetAutoResize:
-        views[json.targetID].setAutoResize(json.windowOptions);
+        views[json.targetID].setAutoResize(json.resizeOptions);
+        client.write(
+          json.targetID,
+          consts.eventNames.browserViewEventSetAutoResize
+        );
         break;
       case consts.eventNames.browserViewCmdSetBounds:
         views[json.targetID].setBounds(json.bounds);
@@ -380,7 +417,7 @@ function onReady() {
         client.write(
           json.targetID,
           consts.eventNames.browserViewEventGetBounds,
-          bounds
+          { bounds }
         );
         break;
       // Window
@@ -903,7 +940,7 @@ function browserViewCreate(json) {
   views[json.targetID] = new BrowserView(json.windowOptions);
 
   if (typeof json.windowOptions.proxy !== "undefined") {
-    elements[json.targetID].webContents.session
+    views[json.targetID].webContents.session
       .setProxy(json.windowOptions.proxy)
       .then(() => browserViewCreateFinish(json));
   } else {
@@ -912,6 +949,14 @@ function browserViewCreate(json) {
 }
 
 function browserViewCreateFinish(json) {
+  if (typeof json.url === "undefined" || !json.url) {
+    client.write(
+      json.targetID,
+      consts.eventNames.browserViewEventDidFinishLoad
+    );
+    return;
+  }
+
   views[json.targetID].webContents.loadURL(
     json.url,
     typeof json.windowOptions.load !== "undefined"

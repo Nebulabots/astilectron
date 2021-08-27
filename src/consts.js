@@ -12,16 +12,29 @@ module.exports = {
     appEventSecondInstance: "app.event.second.instance",
     browserViewCmdCreate: "browser.view.cmd.create",
     browserViewCmdLoadUrl: "browser.view.cmd.load.url",
+    browserViewEventLoadedUrl: "browser.view.event.loaded.url",
     browserViewEventDidFinishLoad: "browser.view.event.did.finish.load",
     browserViewCmdWebContentsExecuteJavascript:
       "browser.view.cmd.web.contents.execute.javascript",
+    browserViewEventWebContentsExecutedJavaScript:
+      "browser.view.event.web.contents.executed.javascript",
     browserViewCmdWebContentsSetProxy:
       "browser.view.cmd.web.contents.set.proxy",
+    browserViewCmdInterceptStringProtocol:
+      "browser.view.cmd.intercept.string.protocol",
+    browserViewEventInterceptStringProtocol:
+      "browser.view.event.intercept.string.protocol",
+    browserViewEventInterceptStringProtocolCallback:
+      "browser.view.event.intercept.string.protocol.callback",
     browserViewCmdSetBackgroundColor: "browser.view.cmd.set.background.color",
+    browserViewEventSetBackgroundColor:
+      "browser.view.event.set.background.color",
     browserViewCmdSetAutoResize: "browser.view.cmd.set.auto.resize",
+    browserViewEventSetAutoResize: "browser.view.event.set.auto.resize",
     browserViewCmdSetBounds: "browser.view.cmd.set.bounds",
     browserViewEventSetBounds: "browser.view.event.set.bounds",
     browserViewCmdGetBounds: "browser.view.cmd.get.bounds",
+    browserViewEventGetBounds: "browser.view.event.get.bounds",
     displayEventAdded: "display.event.added",
     displayEventMetricsChanged: "display.event.metrics.changed",
     displayEventRemoved: "display.event.removed",

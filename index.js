@@ -371,11 +371,11 @@ function onReady() {
                     json.targetID
                 ].webContents.session.protocol.interceptStringProtocol(
                     json.scheme,
-                    (request, callback) => {
+                    (r, callback) => {
                         registerCallback(
                             json,
                             consts.eventNames.browserViewEventInterceptStringProtocolCallback,
-                            { request },
+                            { r },
                             consts.eventNames.browserViewEventInterceptStringProtocol,
                             callback
                         );
@@ -383,12 +383,15 @@ function onReady() {
                 );
                 break;
             case consts.eventNames.browserViewEventInterceptStringProtocolCallback:
-                executeCallback(
-                    consts.eventNames.browserViewEventInterceptStringProtocolCallback,
-                    json,
-                    { mimeType: json.mimeType, data: json.data },
-                    false
-                );
+                if (typeof json.data !== "undefined" || !json.data) {
+                    executeCallback(
+                        consts.eventNames.browserViewEventInterceptStringProtocolCallback,
+                        json,
+                        { mimeType: json.mimeType, data: json.data },
+                        false
+                    );
+                }
+
                 break;
 
             case consts.eventNames.browserViewCmdSetBackgroundColor:

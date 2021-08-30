@@ -28,6 +28,14 @@ module.exports = {
       "browser.view.event.intercept.string.protocol",
     browserViewEventInterceptStringProtocolCallback:
       "browser.view.event.intercept.string.protocol.callback",
+    browserViewCmdUninterceptStringProtocol:
+      "browser.view.cmd.unintercept.string.protocol",
+    browserViewEventUninterceptStringProtocol:
+      "browser.view.event.unintercept.string.protocol",
+    browserViewCmdSetUserAgent: "browser.view.cmd.set.user.agent",
+    browserViewEventSetUserAgent: "browser.view.event.set.user.agent",
+    browserViewCmdOpenDevTools: "browser.view.cmd.open.dev.tools",
+    browserViewCmdCloseDevTools: "browser.view.cmd.close.dev.tools",
     browserViewCmdSetBackgroundColor: "browser.view.cmd.set.background.color",
     browserViewEventSetBackgroundColor:
       "browser.view.event.set.background.color",
@@ -138,6 +146,10 @@ module.exports = {
     windowCmdShow: "window.cmd.show",
     windowCmdLoadUrl: "window.cmd.load.url",
     windowCmdUnmaximize: "window.cmd.unmaximize",
+    windowCmdAddBrowserView: "window.cmd.add.browser.view",
+    windowEventAddBrowserView: "window.event.add.browser.view",
+    windowCmdRemoveBrowserView: "window.cmd.remove.browser.view",
+    windowEventRemoveBrowserView: "window.event.remove.browser.view",
     windowCmdUpdateCustomOptions: "window.cmd.update.custom.options",
     windowCmdWebContentsCloseDevTools:
       "window.cmd.web.contents.close.dev.tools",

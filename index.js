@@ -403,13 +403,20 @@ function onReady() {
         );
         break;
       case consts.eventNames.browserViewCmdSetUserAgent:
+        views[json.targetID].webContents.setUserAgent(json.userAgent);
+        client.write(
+          json.targetID,
+          consts.eventNames.browserViewEventSetUserAgent
+        );
+        break;
+      case consts.eventNames.browserViewCmdSessionSetUserAgent:
         views[json.targetID].webContents.session.setUserAgent(
           json.userAgent,
           json.acceptLanguages
         );
         client.write(
           json.targetID,
-          consts.eventNames.browserViewEventSetUserAgent
+          consts.eventNames.browserViewEventSessionSetUserAgent
         );
         break;
       case consts.eventNames.browserViewCmdOpenDevTools:

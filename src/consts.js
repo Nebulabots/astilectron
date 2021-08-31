@@ -34,6 +34,10 @@ module.exports = {
       "browser.view.event.unintercept.string.protocol",
     browserViewCmdSetUserAgent: "browser.view.cmd.set.user.agent",
     browserViewEventSetUserAgent: "browser.view.event.set.user.agent",
+    browserViewCmdSessionSetUserAgent:
+      "browser.view.cmd.session.set.user.agent",
+    browserViewEventSessionSetUserAgent:
+      "browser.view.event.session.set.user.agent",
     browserViewCmdOpenDevTools: "browser.view.cmd.open.dev.tools",
     browserViewCmdCloseDevTools: "browser.view.cmd.close.dev.tools",
     browserViewCmdSetBackgroundColor: "browser.view.cmd.set.background.color",

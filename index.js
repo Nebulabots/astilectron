@@ -412,10 +412,10 @@ function onReady() {
           consts.eventNames.browserViewEventSetUserAgent
         );
         break;
-      case consts.eventNames.browserViewCmdOpenDevtools:
+      case consts.eventNames.browserViewCmdOpenDevTools:
         views[json.targetID].webContents.openDevTools();
         break;
-      case consts.eventNames.browserViewCmdCloseDevtools:
+      case consts.eventNames.browserViewCmdCloseDevTools:
         views[json.targetID].webContents.closeDevTools();
         break;
       case consts.eventNames.browserViewCmdSetBackgroundColor:
@@ -981,8 +981,15 @@ function windowCreateFinish(json) {
 
 // browserViewCreate creates a new browserview instance
 function browserViewCreate(json) {
-  if (json.windowOptions.partition) {
-    session.fromPartition(json.windowOptions.partition);
+  if (!json.windowOptions.webPreferences) {
+    json.windowOptions.webPreferences = {};
+  }
+
+  if (json.windowOptions.webPreferences.partition) {
+    let ses = session.fromPartition(
+      json.windowOptions.webPreferences.partition
+    );
+    json.windowOptions.webPreferences.session = ses;
   }
 
   views[json.targetID] = new BrowserView(json.windowOptions);

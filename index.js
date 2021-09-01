@@ -206,6 +206,20 @@ function onReady() {
         break;
 
       // Session
+      case consts.eventNames.sessionCmdFromPartition:
+        elements[json.SessionId] = session.fromPartition(json.partition);
+        client.write(
+          json.targetID,
+          consts.eventNames.sessionEventFromPartition
+        );
+        break;
+      case consts.eventNames.sessionCmdSetUserAgent:
+        elements[json.targetID].setUserAgent(
+          json.userAgent,
+          json.acceptLanguages
+        );
+        client.write(json.targetID, consts.eventNames.sessionEventSetUserAgent);
+        break;
       case consts.eventNames.sessionCmdClearCache:
         elements[json.targetID].clearCache().then(() => {
           client.write(
@@ -400,23 +414,6 @@ function onReady() {
         client.write(
           json.targetID,
           consts.eventNames.browserViewEventUninterceptStringProtocol
-        );
-        break;
-      case consts.eventNames.browserViewCmdSetUserAgent:
-        views[json.targetID].webContents.setUserAgent(json.userAgent);
-        client.write(
-          json.targetID,
-          consts.eventNames.browserViewEventSetUserAgent
-        );
-        break;
-      case consts.eventNames.browserViewCmdSessionSetUserAgent:
-        views[json.targetID].webContents.session.setUserAgent(
-          json.userAgent,
-          json.acceptLanguages
-        );
-        client.write(
-          json.targetID,
-          consts.eventNames.browserViewEventSessionSetUserAgent
         );
         break;
       case consts.eventNames.browserViewCmdOpenDevTools:
@@ -992,11 +989,9 @@ function browserViewCreate(json) {
     json.windowOptions.webPreferences = {};
   }
 
-  if (json.windowOptions.webPreferences.partition) {
-    let ses = session.fromPartition(
-      json.windowOptions.webPreferences.partition
-    );
-    json.windowOptions.webPreferences.session = ses;
+  if (json.windowOptions.webPreferences.session) {
+    json.windowOptions.webPreferences.session =
+      elements[json.windowOptions.webPreferences.session];
   }
 
   views[json.targetID] = new BrowserView(json.windowOptions);

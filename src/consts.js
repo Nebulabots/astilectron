@@ -86,6 +86,10 @@ module.exports = {
     notificationEventCreated: "notification.event.created",
     notificationEventReplied: "notification.event.replied",
     notificationEventShown: "notification.event.shown",
+    sessionCmdCloseAllConnections: "session.cmd.close.all.connections",
+    sessionEventCloseAllConnections: "session.event.close.all.connections",
+    sessionCmdSetProxy: "session.cmd.set.proxy",
+    sessionEventSetProxy: "session.event.set.proxy",
     sessionCmdWebRequestOnBeforeSendHeaders:
       "session.cmd.web.request.on.before.headers",
     sessionEventWebRequestOnBeforeSendHeadersCallback:

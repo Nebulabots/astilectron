@@ -213,6 +213,26 @@ function onReady() {
           consts.eventNames.sessionEventFromPartition
         );
         break;
+      case consts.eventNames.sessionCmdCloseAllConnections:
+        elements[json.targetID].closeAllConnections().then(() => {
+          client.write(
+            json.targetID,
+            consts.eventNames.sessionEventCloseAllConnections
+          );
+        });
+        break;
+      case consts.eventNames.sessionCmdSetProxy:
+        elements[json.targetID].clearAuthCache().then(() => {
+          elements[json.targetID]
+            .setProxy(json.proxy)
+            .then(() =>
+              client.write(
+                json.targetID,
+                consts.eventNames.sessionEventSetProxy
+              )
+            );
+        });
+        break;
       case consts.eventNames.sessionCmdWebRequestOnBeforeSendHeaders:
         elements[json.targetID].webRequest.onBeforeSendHeaders(
           json.filter,

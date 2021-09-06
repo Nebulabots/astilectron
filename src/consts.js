@@ -86,6 +86,12 @@ module.exports = {
     notificationEventCreated: "notification.event.created",
     notificationEventReplied: "notification.event.replied",
     notificationEventShown: "notification.event.shown",
+    sessionCmdWebRequestOnBeforeSendHeaders:
+      "session.cmd.web.request.on.before.headers",
+    sessionEventWebRequestOnBeforeSendHeadersCallback:
+      "session.event.web.request.on.before.headers.callback",
+    sessionEventWebRequestOnBeforeSendHeaders:
+      "session.event.web.request.on.before.headers",
     sessionCmdSetUserAgent: "session.cmd.set.user.agent",
     sessionEventSetUserAgent: "session.event.set.user.agent",
     sessionCmdFromPartition: "session.cmd.from.partition",

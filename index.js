@@ -212,6 +212,20 @@ function onReady() {
           json.sessionId,
           consts.eventNames.sessionEventFromPartition
         );
+
+        elements[json.sessionId].webContents.on(
+          "login",
+          (event, request, authInfo, callback) => {
+            event.preventDefault();
+            registerCallback(
+              json,
+              consts.callbackNames.webContentsLogin,
+              { authInfo: authInfo, request: request },
+              consts.eventNames.webContentsEventLogin,
+              callback
+            );
+          }
+        );
         break;
       case consts.eventNames.sessionCmdCloseAllConnections:
         elements[json.targetID].closeAllConnections().then(() => {

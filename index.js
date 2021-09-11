@@ -381,7 +381,6 @@ function onReady() {
         break;
 
       // BrowserView
-
       case consts.eventNames.browserViewCmdCreate:
         browserViewCreate(json);
         break;
@@ -586,6 +585,21 @@ function onReady() {
         break;
       case consts.eventNames.windowCmdShow:
         elements[json.targetID].show();
+        break;
+      case consts.eventNames.webContentsEventLogin:
+        elements[json.targetID].webContents.on(
+          "login",
+          (event, request, authInfo, callback) => {
+            event.preventDefault();
+            registerCallback(
+              json,
+              consts.callbackNames.webContentsLogin,
+              { authInfo: authInfo, request: request },
+              consts.eventNames.webContentsEventLogin,
+              callback
+            );
+          }
+        );
         break;
       case consts.eventNames.windowCmdLoadUrl:
         elements[json.targetID].loadURL(json.url, {}).then(() => {

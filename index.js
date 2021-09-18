@@ -370,14 +370,6 @@ function onReady() {
           json.password,
         ]);
         break;
-      case consts.callbackNames.webContentsOnBeforeRequest:
-        executeCallback(
-          consts.callbackNames.webContentsOnBeforeRequest,
-          json,
-          { cancel: json.cancel, redirectURL: json.redirectURL },
-          false
-        );
-        break;
 
       // BrowserView
       case consts.eventNames.browserViewCmdCreate:
@@ -605,19 +597,26 @@ function onReady() {
           client.write(json.targetID, consts.eventNames.windowEventLoadedUrl);
         });
         break;
-      case consts.eventNames.webContentsSessionWebRequestOnBeforeRequest:
-        elements[json.targetID].webRequest.onBeforeRequest((r, cb) => {
-          registerCallback(
-            json,
-            consts.callbackNames.webContentsOnBeforeRequest,
-            { r },
-            consts.eventNames.webContentsSessionWebRequestOnBeforeRequest,
-            cb
-          );
-        });
-        client.write(
-          json.targetID,
-          consts.eventNames.windowEventWebContentsOnBeforeRequest
+      case consts.eventNames.sessionCmdWebRequestOnBeforeRequest:
+        elements[json.targetID].webRequest.onBeforeRequest(
+          json.filter,
+          (request, cb) => {
+            registerCallback(
+              json,
+              consts.eventNames.sessionEventWebRequestOnBeforeRequestCallback,
+              { request },
+              consts.eventNames.sessionEventWebRequestOnBeforeRequest,
+              cb
+            );
+          }
+        );
+        break;
+      case consts.eventNames.sessionEventWebRequestOnBeforeRequestCallback:
+        executeCallback(
+          consts.eventNames.sessionEventWebRequestOnBeforeRequestCallback,
+          json,
+          { cancel: json.cancel, redirectURL: json.redirectURL },
+          false
         );
         break;
       case consts.eventNames.windowCmdWebContentsCloseDevTools:

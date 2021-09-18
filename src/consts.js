@@ -4,7 +4,6 @@ module.exports = {
   callbackNames: {
     webContentsLogin: "web.contents.login",
     webContentsMessage: "web.contents.message",
-    webContentsOnBeforeRequest: "web.contents.on.before.request",
   },
   eventNames: {
     appCmdQuit: "app.cmd.quit",
@@ -134,8 +133,12 @@ module.exports = {
     trayEventRightClicked: "tray.event.right.clicked",
     webContentsEventLogin: "web.contents.event.login",
     webContentsEventLoginCallback: "web.contents.event.login.callback",
-    webContentsSessionWebRequestOnBeforeRequest:
-      "web.contents.event.session.web.request.on.before.request",
+    sessionCmdWebRequestOnBeforeRequest:
+      "session.cmd.web.request.on.before.request",
+    sessionEventWebRequestOnBeforeRequest:
+      "session.event.web.request.on.before.request",
+    sessionEventWebRequestOnBeforeRequestCallback:
+      "session.event.web.request.on.before.request.callback",
     windowCmdSetBrowserView: "window.cmd.set.browser.view",
     windowCmdBlur: "window.cmd.blur",
     windowCmdCenter: "window.cmd.center",
@@ -190,8 +193,6 @@ module.exports = {
     windowEventWebContentsExecutedJavaScript:
       "window.event.web.contents.executed.javascript",
     windowEventWebContentsSetProxy: "window.event.web.contents.set.proxy",
-    windowEventWebContentsOnBeforeRequest:
-      "window.event.web.contents.on.before.request",
     windowEventUpdatedCustomOptions: "window.event.updated.custom.options",
   },
   targetIds: {

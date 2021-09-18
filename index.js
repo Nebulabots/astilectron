@@ -296,11 +296,11 @@ function onReady() {
       case consts.eventNames.protocolEventInterceptStringProtocol:
         elements[json.targetID].interceptStringProtocol(
           json.scheme,
-          (r, callback) => {
+          (request, callback) => {
             registerCallback(
               json,
               consts.eventNames.protocolEventInterceptStringProtocolCallback,
-              { r },
+              { request },
               consts.eventNames.protocolEventInterceptStringProtocol,
               callback
             );
@@ -417,11 +417,11 @@ function onReady() {
           json.targetID
         ].webContents.session.protocol.interceptStringProtocol(
           json.scheme,
-          (r, callback) => {
+          (request, callback) => {
             registerCallback(
               json,
               consts.eventNames.browserViewEventInterceptStringProtocolCallback,
-              { r },
+              { request },
               consts.eventNames.browserViewEventInterceptStringProtocol,
               callback
             );

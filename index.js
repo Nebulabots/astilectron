@@ -370,8 +370,7 @@ function onReady() {
           json.password,
         ]);
         break;
-      case consts
-        .eventNames.webContentsSessionWebRequestOnBeforeRequestCallback:
+      case consts.callbackNames.webContentsOnBeforeRequest:
         executeCallback(
           consts.callbackNames.webContentsOnBeforeRequest,
           json,

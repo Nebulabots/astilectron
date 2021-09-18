@@ -136,8 +136,6 @@ module.exports = {
     webContentsEventLoginCallback: "web.contents.event.login.callback",
     webContentsSessionWebRequestOnBeforeRequest:
       "web.contents.event.session.web.request.on.before.request",
-    webContentsSessionWebRequestOnBeforeRequestCallback:
-      "web.contents.event.session.web.request.on.before.request.callback",
     windowCmdSetBrowserView: "window.cmd.set.browser.view",
     windowCmdBlur: "window.cmd.blur",
     windowCmdCenter: "window.cmd.center",

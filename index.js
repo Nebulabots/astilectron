@@ -103,7 +103,7 @@ function onReady() {
 
       case consts.eventNames.appCmdUncaughtException:
         process.on('uncaughtException', (error) => {
-          client.write(json, consts.eventNames.appEventUncaughtException, { error: JSON.stringify(error, Object.getOwnPropertyNames(error)) })
+          client.write(json.targetID, consts.eventNames.appEventUncaughtException, { error: JSON.stringify(error, Object.getOwnPropertyNames(error)) })
         })
         break;
       // Dock

@@ -16,13 +16,11 @@ const consts = require("./src/consts.js");
 const client = require("./src/client.js");
 const readline = require("readline");
 const { BrowserView, session } = require("electron");
-const { targetIds } = require("./src/consts.js");
 
 let rl;
 let callbacks = {};
 let counters = {};
 let elements = {};
-let views = {};
 let windowOptions = {};
 let menus = {};
 let quittingApp = false;
@@ -332,11 +330,11 @@ function onReady() {
       case consts.eventNames.protocolEventInterceptStringProtocol:
         elements[json.targetID].interceptStringProtocol(
           json.scheme,
-          (r, callback) => {
+          (request, callback) => {
             registerCallback(
               json,
               consts.eventNames.protocolEventInterceptStringProtocolCallback,
-              { r },
+              { request },
               consts.eventNames.protocolEventInterceptStringProtocol,
               callback
             );
@@ -406,23 +404,13 @@ function onReady() {
           json.password,
         ]);
         break;
-      case consts
-        .eventNames.webContentsSessionWebRequestOnBeforeRequestCallback:
-        executeCallback(
-          consts.callbackNames.webContentsOnBeforeRequest,
-          json,
-          { cancel: json.cancel, redirectURL: json.redirectURL },
-          false
-        );
-        break;
 
       // BrowserView
-
       case consts.eventNames.browserViewCmdCreate:
         browserViewCreate(json);
         break;
       case consts.eventNames.browserViewCmdLoadUrl:
-        views[json.targetID].webContents
+        elements[json.targetID].webContents
           .loadURL(json.url, json.load)
           .then(() => {
             client.write(
@@ -432,7 +420,7 @@ function onReady() {
           });
         break;
       case consts.eventNames.browserViewCmdWebContentsExecuteJavascript:
-        views[json.targetID].webContents
+        elements[json.targetID].webContents
           .executeJavaScript(json.code)
           .then((result) => {
             Promise.resolve(result).then((value) =>
@@ -445,27 +433,29 @@ function onReady() {
           });
         break;
       case consts.eventNames.browserViewCmdWebContentsSetProxy:
-        views[json.targetID].webContents.session.clearAuthCache().then(() => {
-          views[json.targetID].webContents.session
-            .setProxy(json.proxy)
-            .then(() =>
-              client.write(
-                json.targetID,
-                consts.eventNames.browserViewEventWebContentsSetProxy
-              )
-            );
-        });
+        elements[json.targetID].webContents.session
+          .clearAuthCache()
+          .then(() => {
+            elements[json.targetID].webContents.session
+              .setProxy(json.proxy)
+              .then(() =>
+                client.write(
+                  json.targetID,
+                  consts.eventNames.browserViewEventWebContentsSetProxy
+                )
+              );
+          });
         break;
       case consts.eventNames.browserViewCmdInterceptStringProtocol:
-        views[
+        elements[
           json.targetID
         ].webContents.session.protocol.interceptStringProtocol(
           json.scheme,
-          (r, callback) => {
+          (request, callback) => {
             registerCallback(
               json,
               consts.eventNames.browserViewEventInterceptStringProtocolCallback,
-              { r },
+              { request },
               consts.eventNames.browserViewEventInterceptStringProtocol,
               callback
             );
@@ -484,43 +474,43 @@ function onReady() {
         break;
 
       case consts.eventNames.browserViewCmdUninterceptStringProtocol:
-        views[json.targetID].webContents.session.protocol.uninterceptProtocol(
-          json.scheme
-        );
+        elements[
+          json.targetID
+        ].webContents.session.protocol.uninterceptProtocol(json.scheme);
         client.write(
           json.targetID,
           consts.eventNames.browserViewEventUninterceptStringProtocol
         );
         break;
       case consts.eventNames.browserViewCmdOpenDevTools:
-        views[json.targetID].webContents.openDevTools();
+        elements[json.targetID].webContents.openDevTools();
         break;
       case consts.eventNames.browserViewCmdCloseDevTools:
-        views[json.targetID].webContents.closeDevTools();
+        elements[json.targetID].webContents.closeDevTools();
         break;
       case consts.eventNames.browserViewCmdSetBackgroundColor:
-        views[json.targetID].setBackgroundColor(json.color);
+        elements[json.targetID].setBackgroundColor(json.color);
         client.write(
           json.targetID,
           consts.eventNames.browserViewEventSetBackgroundColor
         );
         break;
       case consts.eventNames.browserViewCmdSetAutoResize:
-        views[json.targetID].setAutoResize(json.resizeOptions);
+        elements[json.targetID].setAutoResize(json.resizeOptions);
         client.write(
           json.targetID,
           consts.eventNames.browserViewEventSetAutoResize
         );
         break;
       case consts.eventNames.browserViewCmdSetBounds:
-        views[json.targetID].setBounds(json.bounds);
+        elements[json.targetID].setBounds(json.bounds);
         client.write(
           json.targetID,
           consts.eventNames.browserViewEventSetBounds
         );
         break;
       case consts.eventNames.browserViewCmdGetBounds:
-        let bounds = views[json.targetID].getBounds();
+        let bounds = elements[json.targetID].getBounds();
         client.write(
           json.targetID,
           consts.eventNames.browserViewEventGetBounds,
@@ -529,23 +519,23 @@ function onReady() {
         break;
       // Window
       case consts.eventNames.windowCmdSetBrowserView:
-        elements[json.targetID].setBrowserView(views[json.browserViewID]);
+        elements[json.targetID].setBrowserView(elements[json.browserViewID]);
         client.write(
           json.targetID,
           consts.eventNames.windowEventSetBrowserView
         );
         break;
       case consts.eventNames.windowCmdAddBrowserView:
-        elements[json.targetID].addBrowserView(views[json.browserViewID]);
+        elements[json.targetID].addBrowserView(elements[json.browserViewID]);
         client.write(
           json.targetID,
           consts.eventNames.windowEventAddBrowserView
         );
         break;
       case consts.eventNames.windowCmdRemoveBrowserView:
-        elements[json.targetID].removeBrowserView(views[json.browserViewID]);
+        elements[json.targetID].removeBrowserView(elements[json.browserViewID]);
 
-        delete views[json.browserViewID];
+        delete elements[json.browserViewID];
 
         client.write(
           json.targetID,
@@ -621,24 +611,46 @@ function onReady() {
       case consts.eventNames.windowCmdShow:
         elements[json.targetID].show();
         break;
+      case consts.eventNames.webContentsEventLogin:
+        elements[json.targetID].webContents.on(
+          "login",
+          (event, request, authInfo, callback) => {
+            event.preventDefault();
+            registerCallback(
+              json,
+              consts.callbackNames.webContentsLogin,
+              { authInfo: authInfo, request: request },
+              consts.eventNames.webContentsEventLogin,
+              callback
+            );
+          }
+        );
+        break;
       case consts.eventNames.windowCmdLoadUrl:
         elements[json.targetID].loadURL(json.url, {}).then(() => {
           client.write(json.targetID, consts.eventNames.windowEventLoadedUrl);
         });
         break;
-      case consts.eventNames.webContentsSessionWebRequestOnBeforeRequest:
-        elements[json.targetID].webRequest.onBeforeRequest((r, cb) => {
-          registerCallback(
-            json,
-            consts.callbackNames.webContentsOnBeforeRequest,
-            { r },
-            consts.eventNames.webContentsSessionWebRequestOnBeforeRequest,
-            cb
-          );
-        });
-        client.write(
-          json.targetID,
-          consts.eventNames.windowEventWebContentsOnBeforeRequest
+      case consts.eventNames.sessionCmdWebRequestOnBeforeRequest:
+        elements[json.targetID].webRequest.onBeforeRequest(
+          json.filter,
+          (request, cb) => {
+            registerCallback(
+              json,
+              consts.eventNames.sessionEventWebRequestOnBeforeRequestCallback,
+              { request },
+              consts.eventNames.sessionEventWebRequestOnBeforeRequest,
+              cb
+            );
+          }
+        );
+        break;
+      case consts.eventNames.sessionEventWebRequestOnBeforeRequestCallback:
+        executeCallback(
+          consts.eventNames.sessionEventWebRequestOnBeforeRequestCallback,
+          json,
+          { cancel: json.cancel, redirectURL: json.redirectURL },
+          false
         );
         break;
       case consts.eventNames.windowCmdWebContentsCloseDevTools:
@@ -1070,10 +1082,10 @@ function browserViewCreate(json) {
       elements[json.windowOptions.webPreferences.session];
   }
 
-  views[json.targetID] = new BrowserView(json.windowOptions);
+  elements[json.targetID] = new BrowserView(json.windowOptions);
 
   if (typeof json.windowOptions.proxy !== "undefined") {
-    views[json.targetID].webContents.session
+    elements[json.targetID].webContents.session
       .setProxy(json.windowOptions.proxy)
       .then(() => browserViewCreateFinish(json));
   } else {
@@ -1090,21 +1102,21 @@ function browserViewCreateFinish(json) {
     return;
   }
 
-  views[json.targetID].webContents.loadURL(
+  elements[json.targetID].webContents.loadURL(
     json.url,
     typeof json.windowOptions.load !== "undefined"
       ? json.windowOptions.load
       : {}
   );
 
-  views[json.targetID].webContents.on("did-finish-load", () => {
+  elements[json.targetID].webContents.on("did-finish-load", () => {
     client.write(
       json.targetID,
       consts.eventNames.browserViewEventDidFinishLoad
     );
   });
 
-  views[json.targetID].webContents.on(
+  elements[json.targetID].webContents.on(
     "login",
     (event, request, authInfo, callback) => {
       event.preventDefault();

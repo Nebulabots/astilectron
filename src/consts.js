@@ -10,7 +10,6 @@ module.exports = {
     appEventReady: "app.event.ready",
     appEventSecondInstance: "app.event.second.instance",
     appEventUncaughtException: "app.event.uncaught.exception",
-    appEventUncaughtExceptionCallback: "app.event.uncaught.exception.callback",
     appCmdUncaughtException: "app.cmd.uncaught.exception",
     browserViewCmdCreate: "browser.view.cmd.create",
     browserViewCmdLoadUrl: "browser.view.cmd.load.url",

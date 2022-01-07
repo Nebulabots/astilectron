@@ -103,23 +103,8 @@ function onReady() {
 
       case consts.eventNames.appCmdUncaughtException:
         process.on('uncaughtException', (error) => {
-          registerCallback(
-            json,
-            consts.eventNames.appEventUncaughtExceptionCallback,
-            { error: JSON.stringify(error, Object.getOwnPropertyNames(error)) },
-            consts.eventNames.appEventUncaughtException,
-            () => { }
-          );
+          client.write(json, consts.eventNames.appEventUncaughtException, { error: JSON.stringify(error, Object.getOwnPropertyNames(error)) })
         })
-        break;
-
-      case consts.eventNames.appEventUncaughtExceptionCallback:
-        executeCallback(
-          consts.eventNames.appEventUncaughtExceptionCallback,
-          json,
-          undefined,
-          false
-        );
         break;
       // Dock
       case consts.eventNames.dockCmdBounce:

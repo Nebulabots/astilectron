@@ -121,7 +121,6 @@ function onReady() {
           false
         );
         break;
-
       // Dock
       case consts.eventNames.dockCmdBounce:
         let id = 0;
